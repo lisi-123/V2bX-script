@@ -208,15 +208,24 @@ install_V2bX() {
     echo "V2bX version      - 查看 V2bX 版本"
     echo "------------------------------------------"
     # 首次安装询问是否生成配置文件
-    if [[ $first_install == true ]]; then
-        read -rp "检测到你为第一次安装V2bX,是否自动直接生成配置文件？(y/n): " if_generate
-        if [[ $if_generate == [Yy] ]]; then
-            curl -o ./initconfig.sh -Ls https://raw.githubusercontent.com/lisi-123/V2bX-script/master/initconfig.sh
-            source initconfig.sh
-            rm initconfig.sh -f
-            generate_config_file
-        fi
+if [[ $first_install == true ]]; then
+    echo "倒计时3秒，按任意键开始生成自动配置文件，若无操作将跳过..."
+    
+    # 在3秒内等待用户输入
+    read -t 3 -rp "按任意键继续，或等待自动跳过..." if_generate
+    
+    # 如果有输入，则开始生成配置文件
+    if [[ -n $if_generate ]]; then
+        echo "检测到输入，开始生成配置文件..."
+        curl -o ./initconfig.sh -Ls https://raw.githubusercontent.com/lisi-123/V2bX-script/master/initconfig.sh
+        source initconfig.sh
+        rm initconfig.sh -f
+        generate_config_file
+    else
+        echo "没有输入，跳过自动生成配置文件。"
     fi
+fi
+
 }
 
 echo -e "${green}开始安装${plain}"
